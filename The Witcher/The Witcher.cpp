@@ -1,139 +1,19 @@
 ﻿#include <iostream>
 #include <ctime>
-#include <string>
+
+#include "Creature.h"
+#include "Player.h"
+#include "Monster.h"
+#include "RandomNumber.h"
 
 using namespace std;
-
-int getRandomNumber(int min, int max);
-
-class Creature
-{
-protected:
-    string name;
-    int health;
-    int damage;
-    int gold;
-
-public:
-    Creature(string name, int health, int damage, int gold)
-        : name(name), health(health), damage(damage), gold(gold) {}
-
-    const string& getName()
-    { 
-        return name; 
-    }
-
-    int getHealth()
-    { 
-        return health; 
-    }
-
-    int getDamage()
-    {
-        return damage; 
-    }
-
-    int getGold()
-    { 
-        return gold; 
-    }
-
-    void reduceHealth(int health)
-    {
-        this->health -= health;
-    }
-
-    bool isDead()
-    {
-        return health <= 0;
-    }
-
-    void addGold(int gold)
-    {
-        this->gold += gold;
-    }
-};
-
-class Player : public Creature
-{
-private:
-    int level = 1;
-
-public:
-    Player(string name)
-        : Creature(name, 10, 1, 0) {}
-
-    void levelUp()
-    {
-        ++level;
-        ++damage;
-        ++health;
-    }
-
-    int getLevel()
-    { 
-        return level;
-    }
-
-    bool hasWon()
-    { 
-        return level >= 20; 
-    }
-};
-
-class Monster : public Creature
-{
-private:
-    enum Type
-    {
-        BASILISK,
-        GHUL,
-        DROWNER,
-        GHOST,
-        WYVERN,
-        MAX_TYPES
-    };
-
-    struct MonsterData
-    {
-        string name;
-        int health;
-        int damage;
-        int gold;
-    };
-
-    static MonsterData monsterData[MAX_TYPES];
-    Type type;
-
-public:
-    Monster(Type type)
-        : Creature(monsterData[type].name, monsterData[type].health, monsterData[type].damage, monsterData[type].gold) {}
-   
-    Monster(string name, int health, int damage, int gold) 
-        : Creature(name, health, damage, gold) {}
-
-    static Monster getRandomMonster()
-    {
-        int num = getRandomNumber(0, MAX_TYPES - 1);
-        return Monster(static_cast<Type>(num));
-    }
-};
-
-Monster::MonsterData Monster::monsterData[Monster::MAX_TYPES]
-{
-    {"Василиск",20,10,100},
-    {"Гуль",5,4,25},
-    {"Утопец",2,1,10},
-    {"Призрак",3,2,15},
-    {"Виверна",10,8,50}
-};
 
 void attackPlayer(Player& p, Monster& m);
 void attackMonster(Monster& m, Player& p);
 void fightMonster(Player& p);
 void healthDamage(Player& p);
-void quest(Player& p);
 char inputQuest();
+void quest(Player& p);
 char takeTheKingMoney();
 char reset();
 
@@ -169,11 +49,14 @@ int main()
     return 0;
 }
 
-int getRandomNumber(int min, int max)
+Monster::MonsterData Monster::monsterData[Monster::MAX_TYPES]
 {
-    static const double fraction = 1.0 / (static_cast<double>(RAND_MAX) + 1.0);
-    return static_cast<int>(rand() * fraction * (max - min + 1) + min);
-}
+    {"Василиск",20,10,100},
+    {"Гуль",5,4,25},
+    {"Утопец",2,1,10},
+    {"Призрак",3,2,15},
+    {"Виверна",10,8,50}
+};
 
 void attackPlayer(Player& p, Monster& m)
 {
@@ -249,6 +132,19 @@ void healthDamage(Player& p)
     cout << "Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << "." << endl;
 }
 
+char inputQuest()
+{
+    cout << "\nЛютику требуется твоя помощь!!!\n";
+
+    char input;
+    do {
+        cout << "Помочь? (y)ОХ УЖ ЭТОТ ЛЮТИК / (n)НИ ЗА ЧТО: ";
+        cin >> input;
+    } while (input != 'y' && input != 'n');
+
+    return input;
+}
+
 void quest(Player& p)
 {
     inputQuest();
@@ -281,19 +177,6 @@ void quest(Player& p)
             }
         }
     }
-}
-
-char inputQuest()
-{
-    cout << "\nЛютику требуется твоя помощь!!!\n";
-
-    char input;
-    do {
-        cout << "Помочь? (y)ОХ УЖ ЭТОТ ЛЮТИК / (n)НИ ЗА ЧТО: ";
-        cin >> input;
-    } while (input != 'y' && input != 'n');
-
-    return input;
 }
 
 char takeTheKingMoney()

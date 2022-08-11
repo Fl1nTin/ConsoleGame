@@ -10,6 +10,7 @@ class Monster : public Creature
 private:
     enum Type
     {
+        WOLF,
         BASILISK,
         GHUL,
         DROWNER,

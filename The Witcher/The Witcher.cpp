@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include <ctime>
-
 #include "Creature.h"
 #include "Player.h"
 #include "Monster.h"
@@ -10,7 +9,9 @@ using namespace std;
 
 void attackPlayer(Player& p, Monster& m);
 void attackMonster(Monster& m, Player& p);
-void fightMonster(Player& p);
+void randomMonsterAndFight(Player& p);
+void fightMonster(Player& p, Monster& m);
+void saveTheCiri(Player& p, int& count);
 void healthDamage(Player& p);
 char inputQuest();
 void quest(Player& p);
@@ -28,8 +29,17 @@ int main()
         cout << "Привет, " << player.getName() << '!' << endl;
         healthDamage(player);
 
+        int count = 0;
         while (!player.isDead() && !player.hasWon())
-            fightMonster(player);
+        {
+            randomMonsterAndFight(player);
+
+            if (count < 1)
+            {
+                if (player.getLevel() >= 10 && player.getLevel() < 20)
+                    saveTheCiri(player, count);
+            }
+        }
 
         if (player.getLevel() == 20)
             quest(player);
@@ -51,10 +61,11 @@ int main()
 
 Monster::MonsterData Monster::monsterData[Monster::MAX_TYPES]
 {
-    {"Василиск",20,10,100},
-    {"Гуль",5,4,25},
-    {"Утопец",2,1,10},
-    {"Призрак",3,2,15},
+    {"Волк",1,2,10},
+    {"Василиск",15,10,70},
+    {"Гуль",5,5,25},
+    {"Утопец",2,2,15},
+    {"Призрак",4,3,20},
     {"Виверна",10,8,50}
 };
 
@@ -72,8 +83,8 @@ void attackPlayer(Player& p, Monster& m)
         cout << "Ты убил: " << m.getName() << ".\n";
         p.levelUp();
         cout << "\nТеперь твой уровень: " << p.getLevel() << ". Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << ".\n";
-        cout << "В кошельке: " << m.getGold() << " крон.\n";
         p.addGold(m.getGold());
+        cout << "В кошельке: " << p.getGold() << " крон.\n";
     }
 }
 
@@ -92,10 +103,15 @@ void attackMonster(Monster& m, Player& p)
         cout << p.getHealth() << '\n';
 }
 
-void fightMonster(Player& p)
+void randomMonsterAndFight(Player& p)
 {
     Monster m = Monster::getRandomMonster();
 
+    fightMonster(p, m);
+}
+
+void fightMonster(Player& p, Monster& m)
+{
     cout << "\nТы встретил: " << m.getName() << ". Здоровье: " << m.getHealth() << ". Урон: " << m.getDamage() << endl;
 
     while (!m.isDead() && !p.isDead())
@@ -124,6 +140,21 @@ void fightMonster(Player& p)
             attackPlayer(p, m);
             attackMonster(m, p);
         }
+    }
+}
+
+void saveTheCiri(Player& p, int& count)
+{
+    if (getRandomNumber(1, 5) == 2)
+    {
+        cout << "\nСпаси Цири!";
+        Monster m("Дикая охота", 20, 10, 100);
+        while (!p.isDead() && !m.isDead())
+        {
+            fightMonster(p, m);
+        }
+
+        ++count;
     }
 }
 

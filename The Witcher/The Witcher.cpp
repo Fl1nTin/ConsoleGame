@@ -1,10 +1,11 @@
 ﻿#include <iostream>
 #include <ctime>
+#include <windows.h>
 #include "Creature.h"
 #include "Player.h"
 #include "Monster.h"
 #include "RandomNumber.h"
-
+#include "Menu.h"
 using namespace std;
 
 void attackPlayer(Player& p, Monster& m);
@@ -16,14 +17,18 @@ void healthDamage(Player& p);
 char inputQuest();
 void quest(Player& p);
 char takeTheKingMoney();
-char reset();
 
 int main()
 {
     setlocale(LC_ALL, "rus");
     srand(time(0));
     rand();
+    SetConsoleTitle(L"The Witcher");
 
+    Menu menu;
+    menu.menuInteraction();
+    menu.consoleCursorVisible(true, 10);
+    
     do {
         Player player("Геральд");
         cout << "Привет, " << player.getName() << '!' << endl;
@@ -43,17 +48,23 @@ int main()
 
         if (player.getLevel() == 20)
             quest(player);
-
+        
+        int ch;
         if (player.isDead())
         {
-            cout << "\nТЫ умер! Заработал " << player.getGold() << " крон.\n";
-            cout << "Жаль, что ты не можешь забрать это с собой!" << endl;
+            cout << "\nХолера. ТЫ умер! Заработал " << player.getGold() << " крон.\n";
+            cout << "Жаль, что ТЫ не можешь забрать это с собой!" << endl;
+            ch = _getch();
+            system("CLS");
         }
         else
         {
-            cout << "\nТы убил всех монстров и заработал " << player.getGold() << " крон!" << endl;
+            cout << "\nТЫ убил всех монстров и заработал " << player.getGold() << " крон!" << endl;
+            ch = _getch();
+            system("CLS");
         }   
-    } while (reset());
+        
+    } while (menu.menuInteraction());
 
     cin.get();
     return 0;
@@ -80,9 +91,9 @@ void attackPlayer(Player& p, Monster& m)
 
     if (m.isDead())
     {
-        cout << "Ты убил: " << m.getName() << ".\n";
+        cout << "ТЫ убил: " << m.getName() << ".\n";
         p.levelUp();
-        cout << "\nТеперь твой уровень: " << p.getLevel() << ". Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << ".\n";
+        cout << "\nТеперь ТВОЙ уровень: " << p.getLevel() << ". Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << ".\n";
         p.addGold(m.getGold());
         cout << "В кошельке: " << p.getGold() << " крон.\n";
     }
@@ -112,7 +123,7 @@ void randomMonsterAndFight(Player& p)
 
 void fightMonster(Player& p, Monster& m)
 {
-    cout << "\nТы встретил: " << m.getName() << ". Здоровье: " << m.getHealth() << ". Урон: " << m.getDamage() << endl;
+    cout << "\nТЫ встретил: " << m.getName() << ". Здоровье: " << m.getHealth() << ". Урон: " << m.getDamage() << endl;
 
     while (!m.isDead() && !p.isDead())
     {
@@ -122,6 +133,7 @@ void fightMonster(Player& p, Monster& m)
 
         if (input == 'r')
         {
+            cin.ignore(32767, '\n');
             if (getRandomNumber(1, 2) == 1)
             {
                 cout << "Удалось сбежать.\n";
@@ -129,7 +141,7 @@ void fightMonster(Player& p, Monster& m)
             }
             else
             {
-                cout << "Тебя настигли.\n";
+                cout << "ТЕБЯ настигли.\n";
                 attackMonster(m, p);
                 continue;
             }
@@ -137,6 +149,7 @@ void fightMonster(Player& p, Monster& m)
 
         if (input == 'f')
         {
+            cin.ignore(32767, '\n');
             attackPlayer(p, m);
             attackMonster(m, p);
         }
@@ -147,7 +160,7 @@ void saveTheCiri(Player& p, int& count)
 {
     if (getRandomNumber(1, 5) == 2)
     {
-        cout << "\nСпаси Цири!";
+        cout << "\nСПАСИ ЦИРИ!";
         Monster m("Дикая охота", 20, 10, 100);
         while (!p.isDead() && !m.isDead())
         {
@@ -165,7 +178,7 @@ void healthDamage(Player& p)
 
 char inputQuest()
 {
-    cout << "\nЛютику требуется твоя помощь!!!\n";
+    cout << "\nЛютику требуется ТВОЯ помощь!!!\n";
 
     char input;
     do {
@@ -182,7 +195,7 @@ void quest(Player& p)
 
     cout << p.getName() << " решил помочь!\n";
     cout << "Помоги завоевать сердце принцессы. Убей Короля.\n" << endl;
-    Monster king("Король", 50, 10, 0);
+    Monster king("Король", 50, 7, 0);
 
     while (!p.isDead() && !king.isDead())
     {
@@ -219,17 +232,4 @@ char takeTheKingMoney()
     } while (input != 'y' && input != 'n');
 
     return input;
-}
-
-char reset()
-{
-    char input;
-    do {
-        cout << "Сыграем еще? (y)ДА / (n)НЕТ: ";
-        cin >> input;
-    } while (input != 'y' && input != 'n');
-
-    cout << "____________________________________________" << endl;
-
-    return (input == 'y');
 }

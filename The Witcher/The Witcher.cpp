@@ -94,6 +94,7 @@ void attackPlayer(Player& p, Monster& m)
     {
         cout << "ТЫ убил: " << m.getName() << ".\n";
         p.levelUp();
+
         cout << "\nТеперь ТВОЙ уровень: " << p.getLevel() << ". Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << ".\n";
         p.addGold(m.getGold());
         cout << "В кошельке: " << p.getGold() << " крон.\n";
@@ -135,7 +136,6 @@ void fightMonster(Player& p, Monster& m)
 
         if (input == 'r')
         {
-            cin.ignore(32767, '\n');
             if (getRandomNumber(1, 2) == 1)
             {
                 cout << "Удалось сбежать.\n";
@@ -169,10 +169,8 @@ void saveTheCiri(Player& p, int& count)
         cout << "\nСПАСИ ЦИРИ!";
         Monster m("Дикая охота", 20, 10, 100);
         while (!p.isDead() && !m.isDead())
-        {
             fightMonster(p, m);
-        }
-
+        
         ++count;
     }
 }
@@ -207,7 +205,7 @@ void quest(Player& p)
         if (king.getHealth() <= 10)
         {
             cout << '\n' << p.getName() << " давай договоримся. " <<
-                king.getName() << " протягивает 1000 крон." << endl;
+                    king.getName() << " протягивает 1000 крон." << endl;
 
             if (takeTheKingMoney() == 'y')
             {
@@ -219,7 +217,7 @@ void quest(Player& p)
             else
             {
                 cout << "\nКолдун еб***й. " << king.getName() << " использовал магию и сбежал.\n" <<
-                    "Как сказать Лютику, что это была не принцесса?..." << endl;
+                        "Как сказать Лютику, что это была не принцесса?..." << endl;
                 return;
             }
         }

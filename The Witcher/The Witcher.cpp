@@ -6,6 +6,7 @@
 #include "Monster.h"
 #include "RandomNumber.h"
 #include "Menu.h"
+
 using namespace std;
 
 void attackPlayer(Player& p, Monster& m);
@@ -33,7 +34,7 @@ int main()
         Player player("Геральд");
         cout << "Привет, " << player.getName() << '!' << endl;
         healthDamage(player);
-
+        
         int count = 0;
         while (!player.isDead() && !player.hasWon())
         {
@@ -156,6 +157,11 @@ void fightMonster(Player& p, Monster& m)
     }
 }
 
+void healthDamage(Player& p)
+{
+    cout << "Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << "." << endl;
+}
+
 void saveTheCiri(Player& p, int& count)
 {
     if (getRandomNumber(1, 5) == 2)
@@ -169,11 +175,6 @@ void saveTheCiri(Player& p, int& count)
 
         ++count;
     }
-}
-
-void healthDamage(Player& p)
-{
-    cout << "Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << "." << endl;
 }
 
 char inputQuest()
@@ -204,19 +205,20 @@ void quest(Player& p)
 
         if (king.getHealth() <= 10)
         {
-            cout << '\n' << p.getName() << " давай договоримся. ";
-            cout << king.getName() << " протягивает 100 крон." << endl;
+            cout << '\n' << p.getName() << " давай договоримся. " <<
+                    king.getName() << " протягивает 1000 крон." << endl;
 
             if (takeTheKingMoney() == 'y')
             {
-                cout << "\nТы взял деньги.\n";
-                p.addGold(100);
+                cout << "\nТЫ взял деньги.\n";
+                p.addGold(1000);
                 cout << "Лютик огорчен.\n";
                 return;
             }
             else
             {
-                cout << '\n' << king.getName() << " использовал магию и сбежал" << endl;
+                cout << "\nКолдун еб***й. " << king.getName() << " использовал магию и сбежал.\n" <<
+                        "Как сказать Лютику, что это была не принцесса?..." << endl;
                 return;
             }
         }

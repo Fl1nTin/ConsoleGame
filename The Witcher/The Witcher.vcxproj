@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Creature.cpp" />
-    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="RandomNumber.cpp" />
@@ -136,7 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Creature.h" />
-    <ClInclude Include="Menu.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RandomNumber.h" />

@@ -94,7 +94,6 @@ void attackPlayer(Player& p, Monster& m)
     {
         cout << "ТЫ убил: " << m.getName() << ".\n";
         p.levelUp();
-
         cout << "\nТеперь ТВОЙ уровень: " << p.getLevel() << ". Здоровье: " << p.getHealth() << ". Урон: " << p.getDamage() << ".\n";
         p.addGold(m.getGold());
         cout << "В кошельке: " << p.getGold() << " крон.\n";
